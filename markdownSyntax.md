@@ -1,32 +1,32 @@
 ## 斜体与加粗
-Writing in Markdown is not that _hard_!
-I will complete these **lessons**!
+Writing in Markdown is not that _hard_!  
+I will complete these **lessons**!  
 "Of course," she whispered. Then, she shouted: "All I need is **_a little moxie_**!"
 
 
 ## 标题
-#Header one
-##Header two
-###Header three
-####Header four
-#####Header five
-######Header six
+# Header one  
+## Header two  
+### Header three  
+#### Header four  
+##### Header five  
+###### Header six  
 
 
 ## 超链接
 格式: [Text](Link URL)
 
-[Search for it.](www.github.com)
-You're really, [**really**](www.google.com) going to want to see this.
-The Latest News from the [BBC](www.bbc.com/news)
-Do you want to [see something fun](www.github.com)?
+[Search for it.](www.github.com)  
+You're really, [**really**](www.google.com) going to want to see this.  
+The Latest News from the [BBC](www.bbc.com/news)  
+Do you want to [see something fun](www.github.com)?  
 Well, do I have [the website for you](www.google.com)!
 
 
 ## 引用图片
 格式: ![Text](image URL)
 
-![github](http://octodex.github.com/images/octdrey-catburn.jpg)
+![github](http://octodex.github.com/images/octdrey-catburn.jpg)  
 ![The second first father](http://octodex.github.com/images/foundingfather_v2.png)
 
 
