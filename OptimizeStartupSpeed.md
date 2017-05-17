@@ -1,5 +1,9 @@
 ﻿# 优化Unity启动速度
 
+
+要优化启动速度，先来谈谈启动时做了些什么：开始黑屏时是在加载资源。先加载的是Unity Player内核，再是游戏里的资源，比如Resources文件夹中的东西，太多了会对加载速度有影响，最好的方式是动态加载。压缩贴图，音频使用加载模式Stream from disc，都可以提升启动速度，其实主要是Unity在启动时需要加载的东西越少越好，任何在Hierarchy面板中的东西（包括引用）都是在初始化时加载
+
+
 ## Multithreaded rendering
 
 > 你可以在3.5之后的版本PlayerSettings-Other Settings-Rendering中开启。  
