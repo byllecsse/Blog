@@ -1,10 +1,10 @@
-##Ğ±ÌåÓë¼Ó´Ö
+## æ–œä½“ä¸åŠ ç²—
 Writing in Markdown is not that _hard_!
 I will complete these **lessons**!
 "Of course," she whispered. Then, she shouted: "All I need is **_a little moxie_**!"
 
 
-##±êÌâ
+## æ ‡é¢˜
 #Header one
 ##Header two
 ###Header three
@@ -13,8 +13,8 @@ I will complete these **lessons**!
 ######Header six
 
 
-##³¬Á´½Ó
-¸ñÊ½: [Text](Link URL)
+## è¶…é“¾æ¥
+æ ¼å¼: [Text](Link URL)
 
 [Search for it.](www.github.com)
 You're really, [**really**](www.google.com) going to want to see this.
@@ -23,14 +23,14 @@ Do you want to [see something fun](www.github.com)?
 Well, do I have [the website for you](www.google.com)!
 
 
-##ÒıÓÃÍ¼Æ¬
-¸ñÊ½: ![Text](image URL)
+## å¼•ç”¨å›¾ç‰‡
+æ ¼å¼: ![Text](image URL)
 
 ![github](http://octodex.github.com/images/octdrey-catburn.jpg)
 ![The second first father](http://octodex.github.com/images/foundingfather_v2.png)
 
 
-##ÇøÓò
+## åŒºåŸŸ
 >"Her eyes had called him and his soul had leaped at the call. To live, to err, to fall, to triumph, to recreate life out of life!"
 
 >Once upon a time and a very good time it was there was a moocow coming down along the road and this moocow that was coming down along the road met a nicens little boy named baby tuckoo...
@@ -40,7 +40,7 @@ Well, do I have [the website for you](www.google.com)!
 >He was baby tuckoo. The moocow came down the road where Betty Byrne lived: she sold lemon platt.
 
 
-##ÁĞ±í
+## åˆ—è¡¨
 * Flour, 
 * Cheese, 
 * Tomatoes
@@ -59,8 +59,8 @@ Well, do I have [the website for you](www.google.com)!
     * Is possibly mentally unwell
 	
 
-##¶ÎÂä
-Ê¹ÓÃ¡°Á½¸ö¿Õ¸ñ·û¡±ÔÚ¾äÎ²»»ĞĞ¡£
+## æ®µè½
+ä½¿ç”¨â€œä¸¤ä¸ªç©ºæ ¼ç¬¦â€åœ¨å¥å°¾æ¢è¡Œã€‚
 
 Do I contradict myself?  
 Very well then I contradict myself,  
