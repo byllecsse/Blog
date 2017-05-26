@@ -8,3 +8,48 @@
 3. 交给GPU继续处理，接下来的光栅化阶段都是不可干预的。
 
 ![渲染管线](http://game.ceeger.com/forum/attachment/thumb/1305/thread/2_3106_7d01f3c9ec55e5d.png)
+
+
+先来看个简单的着色器：
+```
+Shader "Example/Diffuse Simple" {
+	SubShader {
+		Tags {"RenderType" = "Opaque"}
+
+		CGPROGRAM
+		#pragma surface sur Lambert
+		struct Input {
+			float4 color : COLOR;
+		};
+		void surf(Input IN, inout SurfaceOutput o) {
+			o.Albedo = 1;
+		}
+		ENDCG
+	}
+	Fallback "Diffuse"
+}
+```
+保存后unity会立刻编译这段shader，程序新建一个着色器，在Inspector面板的shader中出现一个"Example/Diffuse Simple"的路径，是刚刚保存的shader名称，反斜杠‘/’会在shader下拉菜单中创建一个子菜单，标识层级。  
+
+#### SubShader
+每个Unity shader都会包含至少一个SubShader，当渲染面片时，unity会自己判定该用哪一个子着色器，通常会使用排列在第一位的，并且GPU可支持的subshader.  
+
+| 格式：Subshader { [Tags] [CommonState] Passdef [Passdef ...] }  
+
+Tags{}定义使用的渲染通道，设置通道状态。当Unity选定了subshader，就会以当前subshader中定义的每一个通道方式渲染物体，每个渲染的物体都是个昂贵的操作，所以尽可能少地定义通道，除非一些图形效果必须使用多个通道。  
+
+通道类型包括:  
+ - regular Pass
+ - Use Pass
+ - Grab Pass
+
+
+##### SubShader Tags
+subshader用标签的方式告知着色器怎么渲染、何时渲染。
+
+ | 格式：Tags { "TagName1" = "Value1" "TagName2" = "Value2" }
+
+ Tags使用的基础key-value形式，定义渲染顺序和其他参数。  
+
+**渲染顺序 - Queue tag**
+这个tag可以定义物体的渲染顺序，先渲染的通常会被后渲染的遮盖，比如背景、远处的场景，属于最先渲染的范畴，近处的建筑、房屋、室内场景，会遮盖之前渲染的画面（不会全部遮盖，只是按照物体透视关系，遮盖一小块），而粒子、半透明玻璃又在此之后渲染，所以这些渲染顺序可以成为渲染队列，所以采用"Queue"队列一词来命名这个属性。
