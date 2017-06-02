@@ -34,7 +34,7 @@ Shader "Example/Diffuse Simple" {
 #### SubShader
 每个Unity shader都会包含至少一个SubShader，当渲染面片时，unity会自己判定该用哪一个子着色器，通常会使用排列在第一位的，并且GPU可支持的subshader.  
 
-| 格式：Subshader { [Tags] [CommonState] Passdef [Passdef ...] }  
+> 格式：Subshader { [Tags] [CommonState] Passdef [Passdef ...] }  
 
 Tags{}定义使用的渲染通道，设置通道状态。当Unity选定了subshader，就会以当前subshader中定义的每一个通道方式渲染物体，每个渲染的物体都是个昂贵的操作，所以尽可能少地定义通道，除非一些图形效果必须使用多个通道。  
 
@@ -47,7 +47,7 @@ Tags{}定义使用的渲染通道，设置通道状态。当Unity选定了subsha
 ##### SubShader Tags
 subshader用标签的方式告知着色器怎么渲染、何时渲染。
 
- | 格式：Tags { "TagName1" = "Value1" "TagName2" = "Value2" }
+> 格式：Tags { "TagName1" = "Value1" "TagName2" = "Value2" }
 
  Tags使用的基础key-value形式，定义渲染顺序和其他参数。  
 
