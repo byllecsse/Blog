@@ -112,8 +112,23 @@ Shader "Unlit/Show UVs"
 为了避免一个个输入参数，上面的程序定义了一个结构体，来封装输入参数，Unity也提供了很多的内置输入结构体，可以在UnityCG.cginc找到。
 
 ### Fragment shader 输出变量语义
-大多数情况下Fragment shader都输出颜色，同时赋予SV_Target语义。上个实例中的frag函数的返回值是fixed4，这是一个低精度的RGBA颜色值，作为一个唯一返回值，SV_Target的语义是该函数本身。
-https://docs.unity3d.com/Manual/SL-ShaderSemantics.html
+大多数情况下Fragment shader都输出颜色，同时赋予SV_Target语义。上个实例中的frag函数的返回值是fixed4，这是一个低精度的RGBA颜色值，作为一个唯一返回值，SV_Target的语义是该函数本身。返回值也可以是个结构体，封装结构体的好处是将所有内容都返回，而不只是颜色信息，下面的例子是将fixed4值封装在fragOutput结构体中。
+```
+struct fragOutput {
+    fixed4 color : SV_Target;
+};            
+fragOutput frag (v2f i)
+{
+    fragOutput o;
+    o.color = fixed4(i.uv, 0, 0);
+    return o;
+}
+```
+
+**SV_Target: Multiple render targets**
+它可以叠加渲染结果，叠加之前顶点函数的光照渲染结果，它被用来保存一次性渲染的多个结果。
+
+[这里](https://docs.unity3d.com/Manual/SL-ShaderSemantics.html)可以阅读更多信息。
 
 
 ## MVP变换
@@ -127,3 +142,74 @@ https://docs.unity3d.com/Manual/SL-ShaderSemantics.html
 
     * 透视投影(perspective projection)，通过非平行线来把图形映射到2D屏幕上，有透视缩短的特点，更加贴近现实。
     ![透视投影](http://img.blog.csdn.net/20141003002328209)
+
+
+来一个稍微负责点，多几个纹理的shader:
+```
+Shader "Unlit/NewUnlitShader"
+{
+    Properties
+    {
+        _MainTex ("Texture", 2D) = "white" {}
+    }
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" }
+        LOD 100
+
+        *LOD是Shader Level of Detail的缩写，仅在使用Shader和SubShader语言环境下，LOD小于给定值情况下有效。默认LOD值范围是无穷的，但Shader支持的硬件水平不同，故规定一个最低支持限额。*
+            - *VertexLit kind of shaders = 100*
+            - *Decal,  Reflective VertexLit = 150*
+            - *Diffuse = 200*
+            - *Diffuse Detail, Reflective Bumped Unlit, Reflective Bumped VertexLit = 250*
+            - *Bumped, Specular = 300*
+            - *Bumped Specular = 400*
+            - *Parallax = 500*
+            - *Parallax Specular = 600*
+
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            *vert , frag是两个方法名称如下，两地需要保持一致*
+            #include "UnityCG.cginc"
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float2 uv : TEXCOORD0;
+                float4 vertex : SV_POSITION;
+            };
+            *这两个地方(POSITION & SV_POSITION)可以交换，试验过没什么区别。*
+
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            
+            v2f vert (appdata v)
+            {
+                v2f o;
+                o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                return o;
+            }
+            *处理顶点信息*
+            
+            fixed4 frag (v2f i) : SV_Target
+            {
+                // sample the texture
+                fixed4 col = tex2D(_MainTex, i.uv);
+                return col;
+            }
+            *处理片元，每个片区贴片相应贴图*
+            ENDCG
+        }
+    }
+}
+
+```
