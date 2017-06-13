@@ -213,3 +213,13 @@ Shader "Unlit/NewUnlitShader"
 }
 
 ```
+在这个shader中添加了texture，有texture就必然有uv，在程序中定义uv的是TEXCOORD0, 其实一共有TEXCOORD0~7(共8个)，也就是说unity shader最多支持7张纹理图片的渲染，不过根据不同平台的性能，android手机下建议最多2张，否则对性能来说是个极大的开销。  
+上面的程序中只用了一张贴图，属性可以让你创建一个可视化面板来调整shader，而不需要更改shader的代码，在Properties中定义了一个_MainTex，它的格式是
+```
+Properties
+{
+    _Name ("GUI Inspector Title", Type) = value
+}
+```
+
+完成了unity Inspector面板的属性定义后，要在CGPROGRAM中声明使用的属性变量，而且变量名称要和Properties中保持一致，表示我在Properties声明了，然后在CGPROGRAM中使用，否则CGPROGRAM是不会存在这样一个变量的，并且unity编译后报错“undefined variable”
