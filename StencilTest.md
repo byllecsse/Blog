@@ -1,3 +1,4 @@
+[Back](index.md)
 # Stencil Test
 
 模板测试stencil test是3d渲染管线中介于透明测试alpha test和深度测试depth test之间的测试，目的是根据条件来比较设置的参考值referenceValue和模板缓冲区stencil buff中对应的值stencilBuffValue的大小，如果条件满足就让片段fragment（候选的像素）进入下一测试，即深度测试，条件不满足就过滤掉片段，不把对应材质的片段输出到屏幕。  
