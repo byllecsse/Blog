@@ -53,12 +53,14 @@ Stencil
 
 ### 示例2：
 项目需要实现一个下图所示效果，海报图片挪到tab上会截断显示。
+
 ![demo stencil](http://a2.qpic.cn/psb?/V12VFSh93PPcnw/AWmTkmQL2g8zFUVo37ak0wdNFHBQjuYAApYOALIDV.s!/b/dNAAAAAAAAAA&bo=xQJnAQAAAAADB4M!&rf=viewer_4)
 
 海报图片和遮罩的放置位置：
 1. 是最前的一张海报，当前的焦点海报
 2. 是左右的两张海报，海报都在遮罩位置的前面（离相机较近）
 3. 是遮罩的位置，在所有海报的后面  
+
 ![demo stencil 1](http://a2.qpic.cn/psb?/V12VFSh93PPcnw/BN8534M9s8piPAwDZ54tqlJzmT8STWXL*EqIRhPo0sk!/b/dNAAAAAAAAAA&bo=ugEwAQAAAAADB6g!&rf=viewer_4)
 
 这个遮罩的作用是，显示在遮罩中的海报，遮罩本身输出的RGB颜色值为0，就是不输出颜色，关闭深度写入，模板测试永远为通过，将当前pixel buffer中的0值替换为Ref定义的1.
