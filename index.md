@@ -3,8 +3,11 @@
 ## Unity
 - [AssetBundle](AssetBundlesResources.md)
 - [Unity调用Android接口](AndroidJavaObject.md)
+- [优化Unity启动速度](OptimizeStartupSpeed.md)
 
 ### Shader
-- [SurfaceShader](SurfaceShader.md)
+- [Surface Shader](SurfaceShader.md)
+- [Vertex Shader](VertexShader.md)
+- [Stencil Test](StencilTest.md)
 
 [这里有所有的Markdown语法](https://help.github.com/articles/basic-writing-and-formatting-syntax/)
