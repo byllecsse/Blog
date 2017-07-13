@@ -2,7 +2,7 @@
 
 # 造成Profiler "Overhead"的因素
 
-![overhead](https://thumbnail0.baidupcs.com/thumbnail/531b8e5cb2845985b4a100bb8d4b62ea?fid=2485238513-250528-973317166199940&time=1499929200&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-LQhxUTUyWa9%2FRLD4sYWXIbvBtOY%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=4491352218448391577&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video)
+![overhead](https://picabstract-preview-ftn.weiyun.com:8443/ftn_pic_abs_v2/9523b74c92508099cfd00af3410ac88e666e2c0484f87268c55d0314af1e1a8208b28463ff9fc9c3cad865cc12cf9704?pictype=scale&from=30113&version=2.0.0.2&uin=287874300&fname=overhead_profiler.png&size=1024)
 [翻译自这里](http://answers.unity3d.com/questions/482381/what-are-causes-of-overhead-in-profiler.html)
 
 Overhead通常是由于vsync（垂直同步）造成的，特别是IOS平台上不能关闭vsync，Profiler可能还包含分析开销，不过占比不大，不用过分关注，如果你的项目同时还有GPU瓶颈，就可能会体现在"overhead"这一项上，但是更多的时候，会显示为Camera.Present.  
