@@ -1,4 +1,5 @@
-[Back](index.md)
+[返回](index.md)
+
 # 表面着色器
 
 和顶点着色器(Vertex shader)和片段着色器(Fragment shader)不同，表面着色器(Surface shader)不是一个标准渲染管线的必须过程，因为用顶点和片段着色器计算光照比较复杂麻烦，涉及到的代码也比较多，因此unity替我们封装了光照部分的计算，包括不同照明、点光源、平行光、光照贴图、不同的阴影，通过表面着色器我们不用关注底层的光照计算，不用管每个顶点、片段的光照值，相当于一段封装好的函数，直接拿来使用，使用方式也十分简单，你只需要了解ShaderLab的语法和使用规则，代码结构、输入输出和之前的着色器保持一致，也就是说没有什么学习成本，还帮我们省了不少事。  
@@ -112,5 +113,6 @@ half4 LightingHalfLambert (SurfaceOutput s, half3 lightDir, half atten)
 	return c;
 }
 ```
-HalfLambert的原理是把漫反射光照值的范围分成两半，然后加上0.5
-![HalfLambert](http://a1.qpic.cn/psb?/V12VFSh93PPcnw/Fg5Y3vwTb.HSrB1a9q1jhK5v9ve9Du6PZwDW.jPHzus!/b/dBgBAAAAAAAA&ek=1&kp=1&pt=0&bo=egEyAQAAAAADF3o!&tm=1496584800&sce=60-2-2&rf=viewer_4)
+HalfLambert的原理是把漫反射光照值的范围分成两半，然后加上0.5。  
+
+![HalfLambert](https://picabstract-preview-ftn.weiyun.com:8443/ftn_pic_abs_v2/46e43bbdad3b259e0e64bd703c63929b1d9ffb3faa963797a104ee760c3ed2db7153e89febb41d71f60d9248365cb3aa?pictype=scale&from=30113&version=2.0.0.2&uin=287874300&fname=half_lambert.png&size=1024)
