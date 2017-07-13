@@ -2,8 +2,8 @@
 
 # 造成Profiler "Overhead"的因素
 
-![overhead](https://picabstract-preview-ftn.weiyun.com:8443/ftn_pic_abs_v2/9523b74c92508099cfd00af3410ac88e666e2c0484f87268c55d0314af1e1a8208b28463ff9fc9c3cad865cc12cf9704?pictype=scale&from=30113&version=2.0.0.2&uin=287874300&fname=overhead_profiler.png&size=1024)
-[翻译自这里](http://answers.unity3d.com/questions/482381/what-are-causes-of-overhead-in-profiler.html)
+![overhead](https://picabstract-preview-ftn.weiyun.com:8443/ftn_pic_abs_v2/9523b74c92508099cfd00af3410ac88e666e2c0484f87268c55d0314af1e1a8208b28463ff9fc9c3cad865cc12cf9704?pictype=scale&from=30113&version=2.0.0.2&uin=287874300&fname=overhead_profiler.png&size=1024)  
+
 
 Overhead通常是由于vsync（垂直同步）造成的，特别是IOS平台上不能关闭vsync，Profiler可能还包含分析开销，不过占比不大，不用过分关注，如果你的项目同时还有GPU瓶颈，就可能会体现在"overhead"这一项上，但是更多的时候，会显示为Camera.Present.  
 
@@ -42,3 +42,6 @@ Profiler的层次结构显示了最有可能消耗资源的进程，但是仍旧
 
 
 其实并非是Overhead本身消耗了CPU，而是其他没有被Profiler明确给出的明细耗时，优化Overhead其实是去优化其他项，它由非常多的其他原因造成，所以还是去仔细阅读改进代码，减少渲染或者其他子系统的计算占用。
+
+
+[翻译自这里](http://answers.unity3d.com/questions/482381/what-are-causes-of-overhead-in-profiler.html)
