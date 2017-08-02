@@ -28,16 +28,31 @@ _Center & _R是渐变的中心位置和渐变半径（所谓的过渡带），�
 i.y原来y是高度，顶点高度大于中心位置+过渡半径，则返回_MainColor的颜色，就是全部显示为_MainColor.  
 如果在大于中心位置的过渡带中，显示的颜色应该是渐变颜色，计算渐变颜色用了一个插值公式lerp，和dot,pow一样是受gl支持。  
 
-d是侧边顶点高度减去中心点的距离，额，不好脑补，有空**补个图**.  
+d是侧边顶点高度减去中心点的距离，额，不好脑补，看图吧.  
+![顶点颜色渐变](Images/cube_vertex_color.png)  
+
 1-d是最高点到当前点的距离，除以_R得到相对与半径的距离半分比，-0.5将值域降到0~1.  
-| 觉得不好理解的话，可以设两个值看看：
-| 	1. 0.8
-| 	2. 0.5
+
+觉得不好理解的话，可以设两个值看看：0.8 & 0.5
+d = 0.8 - 0.5 = 0.3   
+d = (1 - 0.3 / 0.2) - 0.5 = 0.35  
+d = (在0 ~ 1之间) = 0.35  
+lerp((1,1,1,1), (0,0,0,1), 0.35) = (0.85, 0.85, 0.85, 1)  
+
+d = 0.5 - 0.5 = 0  
+d = (1 - 0 / 0.2) - 0.5 = 0.5  
+d = (在0 ~ 1之间) = 0.5  
+lerp((1,1,1,1), (0,0,0,1), 0.5) = (0.5, 0.5, 0.5, 1)  
 
 ```
+struct v2f
+{
+	float4 vertex : POSITION;
+	float y : COLOR; // 用COLOR语义表示要传递的顶点y值
+};
+
 fixed4 frag(v2f i) : COLOR
 {
-
 	if (i.y > _Center + _R) 
 	{
 		return _MainColor;
@@ -64,3 +79,15 @@ fixed4 frag(v2f i) : COLOR
 	return _SecondColor;
 }
 ```
+
+
+
+#### 语义
+
+unity只提供了下列语义，vert的变量传递给frag必须声明语义才能被GLSL识别，所以就灵活处理了。  
+- POSITION is the vertex position, typically a float3 or float4.
+- NORMAL is the vertex normal, typically a float3.
+- TEXCOORD0 is the first UV coordinate, typically float2, float3 or float4.
+- TEXCOORD1, TEXCOORD2 and TEXCOORD3 are the 2nd, 3rd and 4th UV coordinates, respectively.
+- TANGENT is the tangent vector (used for normal mapping), typically a float4.
+- COLOR is the per-vertex color, typically a float4.
