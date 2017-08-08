@@ -24,6 +24,8 @@ http://dev.twsiyuan.com/2017/02/qrcode-generator-in-unity.html
 
 ###### 记录我的使用步骤
 
+由于是在Android中编辑这段生成二维码代码，先将Unity工程导出为Android Project，5.6版本可以直接选择导出gradle工程，以gradle构建的工程可以直接被Android Studio识别，我的这个项目使用的Unity版本是5.3，没有导出gradle/ADT的选项，只能导出ADT, 是Eclipse Android项目，用Android Studio不能直接打开，必须要多一个"Import Project"操作，将Unity导出的工程作为一个Android Module导入新的Android Studio Project.
 
+![导入Unity Export Project](import_unity_export_project.png)
 
 使用Android Studio导入core-3.3.0.jar，复制粘贴jar包进app/libs
