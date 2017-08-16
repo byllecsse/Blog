@@ -9,7 +9,19 @@ CPU准备数据并通知GPU渲染的过程就是一次DrawCall,如果这个过�
 每在屏幕上绘制一个物体，Unity必须想绘图API（无论OpenGL或者Direct3D)发起一次Draw Call，Draw Call是非常昂贵的，CPU封装好数据发往GPU这个操作很耗时，所以我们要尽可能将物体封装为一次DrawCall，减少数据发送的次数，以减轻这部分的开销，另外永远不用担心GPU无法处理封装的数据，无论模型多复杂，这对于GPU来说，就是一次顶点/片元的计算，当然GPU的性能也会受顶点数量，纹理大小的限制，这些称之为GPU带宽。  
 
 
-## Unity Batching
+###### 为什么draw call是“昂贵的”  
+
+stackoverflow上有个被引用了多次的回答，[地址](https://stackoverflow.com/questions/4853856/why-are-draw-calls-expensive)  
+draw call本质是GPU渲染一系列顶点，处理像素着色、融合、插值，把它们合并成三角形再映射到屏幕的命令。
+其实这种“昂贵”主要是性能差异导致的，GPU处理顶点和像素的速度非常快，他的硬件结构里有大量并行处理器件，可以十分高效地并行处理这些顶点，draw call如果包含一个模型，那么GPU可以一次性处理这个模型的所有顶点的变换计算，在片段着色器阶段，所有顶点构成的三角形的每一个像素又可以经过大量图元计算器件，快速计算出来。  
+
+由于每个像素点都要计算颜色，像素点的数量远比顶点数量多得多，因此GPU中图元计算的器件比顶点计算器件要多得多。
+
+这就造就了GPU变换和渲染三角形远比提交这些顶点的速度快，用原话说是“much faster than you can submit them”，如果大量提交数量不多的顶点，会造成CPU瓶颈，GPU被闲置，CPU的draw call提交速度不能匹配GPU的渲染速度。这就是把更多顶点封装在较少的draw call中的主要目的。  
+
+draw call还有实际的性能消耗，它需要设置一堆的状态（比如选择要使用的顶点，选择要使用的shader），在CPU和GPU两端都要同步状态改变，更新大量的注册信息。如果draw call的提交内容很少，这些状态变换的会占用大部分的draw call性能，就非常不值得了。  
+
+### Unity Batching
 
 Unity使用多种技术来解决这个问题：
 - 静态Batching: 把静态（勾选了static)的物体合并成一个大meshes;
