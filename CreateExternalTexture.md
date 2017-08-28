@@ -29,22 +29,36 @@ public Bitmap getBitmap(String url) {
 public int getTextureId(Bitmap bitmap) {
     if (bitmap == null)
         return 0;
-    int[] newTexId = new int[1];
-    // 创建纹理
-    GLES20.glGenTextures(1, newTexId, 0);
-    int textureId = newTexId[0];
+    
+    int[] newTexId = new int[1];    	// 生成纹理ID
+    GLES20.glGenTextures(
+    	1, 								// 产生纹理id的数量
+    	newTexId, 						// 纹理id的数组
+    	0);								// 偏移量
+    int textureId = newTexId[0];		// 获取产生的纹理id
 
     if (newTexId[0] != 0) {
-    	// 将新建的纹理和编号绑定
+    	// 绑定纹理id
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+
         // 设置纹理的参数
+        // 设置MIN采样方式
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+        // 设置MAG采用方式
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        // 设置S轴拉伸方式
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        // 设置T轴拉伸方式
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-        // 把图片数据拷贝到纹理中
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, bitmap, 0);
-        bitmap.recycle();
+
+        // 实际加载纹理进显存
+        GLUtils.texImage2D(
+        	GLES20.GL_TEXTURE_2D, 		// 纹理类型
+        	0, 							// 纹理的层次，0表示基本图像层，可以理解为直接贴图
+        	GLES20.GL_RGBA, 			// 纹理颜色通道
+        	bitmap, 					// 纹理图像
+        	0);							// 纹理边框尺寸
+        bitmap.recycle();				// 纹理加载成功后释放内存中的纹理图
     }
     return textureId;
 }
