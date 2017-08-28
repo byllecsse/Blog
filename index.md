@@ -4,6 +4,7 @@
 
 ###### Android平台
 - [Unity调用Android接口](AndroidJavaObject.md)
+- [加载外部图片](CreateExternalTexture.md)
 
 ###### 工具
 - [Canvas World Space屏幕自适应](CanvasFitCamera.md)
