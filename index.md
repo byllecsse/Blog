@@ -45,5 +45,9 @@
 - [绘制三角形](OpenglseDrawTriangle.md)
 
 
+
+### Android
+- [ADB配置环境变量的一个坑](an_error_of_adb_config.md)
+
 ------
 [这里有所有的Markdown语法](https://help.github.com/articles/basic-writing-and-formatting-syntax/)
