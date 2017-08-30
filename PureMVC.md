@@ -21,54 +21,54 @@
 
 
 ``` csharp
-		public static PIController Instance
+public static PIController Instance
+{
+	get
+	{
+		if (m_instance == null)
 		{
-			get
+			lock (m_staticSyncRoot)
 			{
-				if (m_instance == null)
-				{
-					lock (m_staticSyncRoot)
-					{
-						if (m_instance == null) m_instance = new PController();
-					}
-				}
-
-				return m_instance;
+				if (m_instance == null) m_instance = new PController();
 			}
 		}
 
+		return m_instance;
+	}
+}
 
-		public static IModel Instance
+
+public static IModel Instance
+{
+	get
+	{
+		if (m_instance == null)
 		{
-			get
+			lock (m_staticSyncRoot)
 			{
-				if (m_instance == null)
-				{
-					lock (m_staticSyncRoot)
-					{
-						if (m_instance == null) m_instance = new Model();
-					}
-				}
-
-				return m_instance;
+				if (m_instance == null) m_instance = new Model();
 			}
 		}
 
-		public static PIView Instance
-		{
-			get
-			{
-				if (m_instance == null)
-				{
-					lock (m_staticSyncRoot)
-					{
-						if (m_instance == null) m_instance = new PView();
-					}
-				}
+		return m_instance;
+	}
+}
 
-				return m_instance;
+public static PIView Instance
+{
+	get
+	{
+		if (m_instance == null)
+		{
+			lock (m_staticSyncRoot)
+			{
+				if (m_instance == null) m_instance = new PView();
 			}
 		}
+
+		return m_instance;
+	}
+}
 
 
 ```
@@ -81,98 +81,98 @@ GameFacade中注册了需要从外部发送的命令，由Command接收命令并
 
 ``` csharp
 // 在Controller中实现注册命令
-		public virtual void RegisterCommand(string notificationName, Type commandType)
+public virtual void RegisterCommand(string notificationName, Type commandType)
+{
+	lock (m_syncRoot) // 我没看到框架里开线程的“明文代码”
+	{
+		if (!m_commandMap.ContainsKey(notificationName))
 		{
-			lock (m_syncRoot) // 我没看到框架里开线程的“明文代码”
-			{
-				if (!m_commandMap.ContainsKey(notificationName))
-				{
-					// This call needs to be monitored carefully. Have to make sure that RegisterObserver
-					// doesn't call back into the controller, or a dead lock could happen.
-					m_view.RegisterObserver(notificationName, new Observer("executeCommand", this));
-				}
-
-				m_commandMap[notificationName] = commandType;
-			}
+			// This call needs to be monitored carefully. Have to make sure that RegisterObserver
+			// doesn't call back into the controller, or a dead lock could happen.
+			m_view.RegisterObserver(notificationName, new Observer("executeCommand", this));
 		}
+
+		m_commandMap[notificationName] = commandType;
+	}
+}
 
 // 在View中实现注册观察者
-		protected IDictionary<string, IList<IObserver>> m_observerMap;
+protected IDictionary<string, IList<IObserver>> m_observerMap;
 
-		public virtual void RegisterObserver(string notificationName, IObserver observer)
+public virtual void RegisterObserver(string notificationName, IObserver observer)
+{
+	lock (m_syncRoot)
+	{
+		if (!m_observerMap.ContainsKey(notificationName))
 		{
-			lock (m_syncRoot)
-			{
-				if (!m_observerMap.ContainsKey(notificationName))
-				{
-					m_observerMap[notificationName] = new List<IObserver>();
-				}
-
-				// 比如可以注册多个Mediator
-				m_observerMap[notificationName].Add(observer);
-			}
+			m_observerMap[notificationName] = new List<IObserver>();
 		}
+
+		// 比如可以注册多个Mediator
+		m_observerMap[notificationName].Add(observer);
+	}
+}
 
 
 // 通知这些观察者
-		public virtual void NotifyObservers(INotification notification)
+public virtual void NotifyObservers(INotification notification)
+{
+	IList<IObserver> observers = null;
+
+	lock (m_syncRoot)
+	{
+		if (m_observerMap.ContainsKey(notification.Name))
 		{
-			IList<IObserver> observers = null;
-
-			lock (m_syncRoot)
-			{
-				if (m_observerMap.ContainsKey(notification.Name))
-				{
-					// Get a reference to the observers list for this notification name
-					IList<IObserver> observers_ref = m_observerMap[notification.Name];
-					// Copy observers from reference array to working array, 
-					// since the reference array may change during the notification loop
-					observers = new List<IObserver>(observers_ref);
-				}
-			}
-
-			// Notify outside of the lock
-			if (observers != null)
-			{
-				// Notify Observers from the working array				
-				for (int i = 0; i < observers.Count; i++)
-				{
-					IObserver observer = observers[i];
-					observer.NotifyObserver(notification);
-				}
-			}
+			// Get a reference to the observers list for this notification name
+			IList<IObserver> observers_ref = m_observerMap[notification.Name];
+			// Copy observers from reference array to working array, 
+			// since the reference array may change during the notification loop
+			observers = new List<IObserver>(observers_ref);
 		}
+	}
 
-
-		public virtual void NotifyObserver(INotification notification)
+	// Notify outside of the lock
+	if (observers != null)
+	{
+		// Notify Observers from the working array				
+		for (int i = 0; i < observers.Count; i++)
 		{
-			object context;
-			string method;
-
-			// Retrieve the current state of the object, then notify outside of our thread safe block
-			lock (m_syncRoot)
-			{
-				context = NotifyContext;
-				method = NotifyMethod;
-			}
-
-			Type t = context.GetType();
-
-			// 为了获取返回值，必须指定 BindingFlags.Instance 或 BindingFlags.Static
-			// 指定 BindingFlags.Public 可在搜索中包含公共成员
-			// BindingFlags.IgnoreCase，表示忽略 name 的大小写
-			BindingFlags f = BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase;
-
-			MethodInfo mi = t.GetMethod(method, f);
-            try
-            {
-                mi.Invoke(context, new object[] { notification }); // 全局调用符合条件的方法
-            }
-            catch(Exception e)
-            {
-                UnityEngine.Debug.LogError(e.ToString());
-            }
+			IObserver observer = observers[i];
+			observer.NotifyObserver(notification);
 		}
+	}
+}
+
+
+public virtual void NotifyObserver(INotification notification)
+{
+	object context;
+	string method;
+
+	// Retrieve the current state of the object, then notify outside of our thread safe block
+	lock (m_syncRoot)
+	{
+		context = NotifyContext;
+		method = NotifyMethod;
+	}
+
+	Type t = context.GetType();
+
+	// 为了获取返回值，必须指定 BindingFlags.Instance 或 BindingFlags.Static
+	// 指定 BindingFlags.Public 可在搜索中包含公共成员
+	// BindingFlags.IgnoreCase，表示忽略 name 的大小写
+	BindingFlags f = BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase;
+
+	MethodInfo mi = t.GetMethod(method, f);
+    try
+    {
+        mi.Invoke(context, new object[] { notification }); // 全局调用符合条件的方法
+    }
+    catch(Exception e)
+    {
+        UnityEngine.Debug.LogError(e.ToString());
+    }
+}
 
 
 ```
@@ -187,53 +187,53 @@ GameFacade中注册了需要从外部发送的命令，由Command接收命令并
 
 
 ``` csharp
-		public virtual void ExecuteCommand(INotification note)
-		{
-			Type commandType = null;
+public virtual void ExecuteCommand(INotification note)
+{
+	Type commandType = null;
 
-			lock (m_syncRoot)
-			{
-				if (!m_commandMap.ContainsKey(note.Name)) return;
-				commandType = m_commandMap[note.Name];
-			}
+	lock (m_syncRoot)
+	{
+		if (!m_commandMap.ContainsKey(note.Name)) return;
+		commandType = m_commandMap[note.Name];
+	}
 
-			object commandInstance = Activator.CreateInstance(commandType);
+	object commandInstance = Activator.CreateInstance(commandType);
 
-			if (commandInstance is PICommand)
-			{
-				((PICommand) commandInstance).Execute(note);
-			}
-		}
+	if (commandInstance is PICommand)
+	{
+		((PICommand) commandInstance).Execute(note);
+	}
+}
 
 ```
 
 
 INotification接口里包含多个属性，通过Name区分各通知的处理内容，用Body可以传递一些参数，在方便的同时，也添加了一点装箱拆箱的消耗。
 ``` csharp
-    public interface INotification
-    {
-        /// <summary>
-        /// The name of the <c>INotification</c> instance
-        /// </summary>
-        /// <remarks>No setter, should be set by constructor only</remarks>
-		string Name { get; }
+public interface INotification
+{
+    /// <summary>
+    /// The name of the <c>INotification</c> instance
+    /// </summary>
+    /// <remarks>No setter, should be set by constructor only</remarks>
+	string Name { get; }
 
-        /// <summary>
-        /// The body of the <c>INotification</c> instance
-        /// </summary>
-		object Body { get; set; }
-		
-        /// <summary>
-        /// The type of the <c>INotification</c> instance
-        /// </summary>
-		string Type { get; set; }
+    /// <summary>
+    /// The body of the <c>INotification</c> instance
+    /// </summary>
+	object Body { get; set; }
+	
+    /// <summary>
+    /// The type of the <c>INotification</c> instance
+    /// </summary>
+	string Type { get; set; }
 
-        /// <summary>
-        /// Get the string representation of the <c>INotification</c> instance
-        /// </summary>
-        /// <returns>The string representation of the <c>INotification</c> instance</returns>
-        string ToString();
-    }
+    /// <summary>
+    /// Get the string representation of the <c>INotification</c> instance
+    /// </summary>
+    /// <returns>The string representation of the <c>INotification</c> instance</returns>
+    string ToString();
+}
 
 ```
 
@@ -245,14 +245,14 @@ INotification接口里包含多个属性，通过Name区分各通知的处理内
 Proxy负责的代码没什么好说的，C#该怎么实现怎么实现，必要时用Loom开线程，获取完了数据各种SendNotification给Mediator，随意了。  
 
 ``` csharp
-		public virtual IProxy RetrieveProxy(string proxyName)
-		{
-			lock (m_syncRoot)
-			{
-				if (!m_proxyMap.ContainsKey(proxyName)) return null;
-				return m_proxyMap[proxyName];
-			}
-		}
+public virtual IProxy RetrieveProxy(string proxyName)
+{
+	lock (m_syncRoot)
+	{
+		if (!m_proxyMap.ContainsKey(proxyName)) return null;
+		return m_proxyMap[proxyName];
+	}
+}
 
 ```
 
@@ -263,38 +263,38 @@ Proxy负责的代码没什么好说的，C#该怎么实现怎么实现，必要�
 我定义了两个Mediator，都继承自Mediator，在注册Mediator时，Mediator里的ListNotificationInterests()里，有添加在list列表中的消息名才会在SendNotification()时被调用到，没有添加的在全局调用HandleNotification()使用会直接忽视。  
 
 ``` csharp
-		public virtual void RegisterMediator(IMediator mediator)
+public virtual void RegisterMediator(IMediator mediator)
+{
+	lock (m_syncRoot)
+	{
+		// do not allow re-registration (you must to removeMediator fist)
+		if (m_mediatorMap.ContainsKey(mediator.MediatorName)) return;
+
+		// Register the Mediator for retrieval by name
+		m_mediatorMap[mediator.MediatorName] = mediator;
+
+		// Get Notification interests, if any.
+		IList<string> interests = mediator.ListNotificationInterests();
+
+		// Register Mediator as an observer for each of its notification interests
+		if (interests.Count > 0)
 		{
-			lock (m_syncRoot)
+			// Create Observer
+			// 啊哈！发现handleNotification的调用了！
+			IObserver observer = new Observer("handleNotification", mediator);
+
+			// Register Mediator as Observer for its list of Notification interests
+			for (int i = 0; i < interests.Count; i++)
 			{
-				// do not allow re-registration (you must to removeMediator fist)
-				if (m_mediatorMap.ContainsKey(mediator.MediatorName)) return;
-
-				// Register the Mediator for retrieval by name
-				m_mediatorMap[mediator.MediatorName] = mediator;
-
-				// Get Notification interests, if any.
-				IList<string> interests = mediator.ListNotificationInterests();
-
-				// Register Mediator as an observer for each of its notification interests
-				if (interests.Count > 0)
-				{
-					// Create Observer
-					// 啊哈！发现handleNotification的调用了！
-					IObserver observer = new Observer("handleNotification", mediator);
-
-					// Register Mediator as Observer for its list of Notification interests
-					for (int i = 0; i < interests.Count; i++)
-					{
-						// 它注册这些观察者是根据ListNotificationInterests中添加的NotificationName来的
-						RegisterObserver(interests[i].ToString(), observer);
-					}
-				}
+				// 它注册这些观察者是根据ListNotificationInterests中添加的NotificationName来的
+				RegisterObserver(interests[i].ToString(), observer);
 			}
-
-			// alert the mediator that it has been registered
-			mediator.OnRegister();
 		}
+	}
+
+	// alert the mediator that it has been registered
+	mediator.OnRegister();
+}
 
 ```
 
