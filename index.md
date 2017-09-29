@@ -26,10 +26,9 @@
 
 ###### 其他
 - [Quad和Plane的区别](difference_of_quad_plane.md)
-- [（转）对Unity中Coroutines的理解](http://wuzhiwei.net/unity_coroutines/)
+- [（转）对Unity中Coroutines的理解](http://wuzhiwei.net/unity_coroutines/)  
+- [（转）Unity3D手游开发实践-腾讯桌球：客户端总结](http://www.jianshu.com/p/10693fee70a5)  
 个人认为这篇干货满满，从项目初期框架选择，到后期优化都有不错的分析。
-- [（转）Unity3D手游开发实践-腾讯桌球：客户端总结](http://www.jianshu.com/p/10693fee70a5)
-
 
 ### Shader
 
