@@ -33,18 +33,19 @@
 
 ### Shader
 
-###### 顶点着色器 
+###### vert & frag
 - [顶点着色器](VertexShader.md)
 - [颜色渐变](ColorFade.md)
 - [顶点动画](VertexAnimation.md)
 
-###### 表面着色器
+###### surface
 - [表面着色器](SurfaceShader.md)
 
-###### 深度测试 和 模板测试
+###### depth & stencil
 - [模板测试](StencilTest.md)
 
-
+###### 固定管线
+- [透明] 
 
 ### OpenGL
 - [绘制三角形](OpenglseDrawTriangle.md)

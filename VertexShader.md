@@ -3,6 +3,7 @@
 
 在Unity中，顶点着色器(Vertex Shader)总是和片段着色器(Fragment Shader)一起，先由顶点着色器计算完顶点的光照后，再输入到片段着色器插值化单位像素的光照结果，经片段着色器处理后的表面信息会更加平滑，阴影渐变的更加柔和。
 
+在OpenGL中，顶点着色器可能非常简单，只是将数据复制传递给下一个着色阶段，也可以执行一些复杂的操作，比如执行大量的计算来得到顶点在屏幕上的位置（mvc变换矩阵），或通过光照计算来判断顶点的颜色。所有的操作都是基于顶点的，顶点着色器对每个顶点都执行一次运算，过多的顶点会降低顶点着色器的运行速度（这取决于显卡性能）。
 
 顶点着色器的结构
 ```
@@ -11,6 +12,7 @@ Pass {
 
     CGPROGRAM
     // compilation directives for this snippet, e.g.:
+    // vert和frag是顶点和片段着色器的函数名，可以随意修改，只需要在这里申明
     #pragma vertex vert
     #pragma fragment frag
 
@@ -224,3 +226,54 @@ Properties
 ```
 
 完成了unity Inspector面板的属性定义后，要在CGPROGRAM中声明使用的属性变量，而且变量名称要和Properties中保持一致，表示我在Properties声明了，然后在CGPROGRAM中使用，否则CGPROGRAM是不会存在这样一个变量的，并且unity编译后报错“undefined variable”
+
+
+一个非常简单的着色器
+```
+Shader "Unlit/NewUnlitShader"
+{
+    SubShader
+    {
+        Pass 
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            void vert(in float2 objPos : POSITION, out float4 pos : POSITION)
+            {
+                pos = float4(objPos, 0, 1);		// - 1
+            }
+            void frag(inout float4 col:COLOR)
+            {
+                col = float4(0, 1, 0, 1);
+            }
+         ENDCG
+        }
+    }
+}
+```
+作用是输出一个纯色的绿色无光照球体，可以随着Game面板的缩放而变化，高宽是屏幕的一半。
+运行截图：
+![fixed-function_01.png](Images/fixed-function_01.png)
+![fixed-function_02.png](Images/fixed-function_02.png)
+
+上述代码1处：直接取objPos的x,y值填充一个float4值，这和GLSL语言特性保持一致。
+类型之间可以进行等价转换
+```
+vec3 velocity = vec3(0.0, 2.0, 3.0);
+ivec3 steps = ivec3(velocity);
+```
+
+向量的构造函数还可以截断或者加长一个向量
+```
+vec4 color;
+vec3 RGB = vec3(color);
+
+vec3 white = vec3(1.0);
+vec4 translucent = vec4(white, 0.5);
+```
+
+> 注意：Unity shader中嵌套的Cg语言，是每行以分号结束的，最近写lua差点要忘记shader。
+
+
+
