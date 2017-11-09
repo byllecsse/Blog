@@ -13,6 +13,8 @@ lua先不说语法规则，在编写上就有和c#很不相同的地方，也是
     end
 3. for是默认从1开始，lua里的数组，没有明确指定下标，都默认从1开始，所以for便利时候，也是写成for i=1, #array do end（=两边不能空格）
 4. 为了省略self，函数一般是“类名:函数名”
+5. for后面跟的是do，而if后面跟的是then
+6. lua中没有花括号的用法，一切判断/循环/函数结尾都通过end。
 
 ###### 类型
 lua不需要区分类型，有些类型c# var，但连var也不需要，直接一个变量名摆在那里直接赋值，这种是全局变量，确保变量名全局唯一就好，否则它会修改原有的变量，如果申明某个全局变量就使用了，lua也不会报错（要视情况，如未申明变量.name就会报错），所以未赋值，或者没定义的变量它的值都是nil
@@ -34,8 +36,8 @@ lua包括多种形式的for循环格式，以及使用for实现的迭代器
 可以说这是lua中最重要的一个概念，凡是以table, 或者dictionary的数据结构，都可以用他来“解析”。它能够用来遍历标准模板库容器中的部分或全部元素，每个迭代器对象代表容器中的确定的地址
 在Lua中迭代器是一种支持指针类型的结构，它可以遍历集合的每一个元素。
 
+``` lua
 array = {11, 22, 33, 44, 55, 66, 77, 88}
-```
 -- for循环
 for i=1, #array do
     print(array[i])
@@ -47,14 +49,16 @@ for k, v in pairs(array) do
 end
 
 -- 如果不需要索引下标
-for _, v in pairs(array) do
+for _, v in pairs(array) do --  注释1
     print(v)
 end
 ```
+注释1是占位符，遍历array不需要索引k的值，所以直接拿占位符“_”忽略掉。
+
 
 创建自己的迭代器
-```
-array = {"lua", "tutorial}
+``` lua
+array = {"lua", "tutorial"}
 
 function elementIterator(collection)
     local index = 0
@@ -80,7 +84,7 @@ end
 - pairs迭代table，可以遍历表中所有的key，可以返回nil
 - ipairs迭代数组，不能返回nil，如果遇到nil则退出
 
-```
+``` lua
 local tab= { 
 [1] = "a", 
 [3] = "b", 
@@ -94,3 +98,20 @@ for i,v in ipairs(tab) do    -- 输出 "a" ,k=2时断开
     print( tab[i] ) 
 end
 ```
+
+
+###### 变长参数
+这个使用特性对于c#这类语言来说，省去了不少的函数重载，由于变长，并且lua语言的不强调类型，所以传入了什么参数，只有在传入的地方才能知道，这和table也类似，可以随意地取值，但只有定义了的变量不为nil。
+
+下面这个示例用的是for的泛型遍历，对于遍历来说，不用关心里面的内容如何，只用将他们循环一次全部打印出来就好。
+``` lua
+function add (...)
+    local s = 0
+    for i, v in ipairs{...} do
+        s = s + v
+    end
+    return s
+end
+```
+
+变长参数可以直接传给下一个函数，作为输入参数，例如add(...)传入的参数，和函数局部变量相同的用法，ipairs{...}可以直接作为table访问。
