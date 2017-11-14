@@ -30,6 +30,12 @@
 - [（转）Unity3D手游开发实践-腾讯桌球：客户端总结](http://www.jianshu.com/p/10693fee70a5)  
 个人认为这篇干货满满，从项目初期框架选择，到后期优化都有不错的分析。
 
+
+### Lua
+- [Lua学习笔记（一）](lua_learning_1.md)
+- [Lua class自动注册控件](lua_register_event.md)
+
+
 ### Shader
 
 ###### vert & frag
