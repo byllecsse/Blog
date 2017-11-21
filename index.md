@@ -34,6 +34,7 @@
 ### Lua
 - [Lua学习笔记（一）](lua_learning_1.md)
 - [Lua class自动注册控件](lua_register_event.md)
+- [Lua中文字符串截取](lua_utf8_sub.md)
 
 
 ### Shader
