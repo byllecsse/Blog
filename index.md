@@ -50,8 +50,6 @@
 ###### depth & stencil
 - [模板测试](StencilTest.md)
 
-###### 固定管线
-- [透明] 
 
 ### OpenGL
 - [绘制三角形](OpenglseDrawTriangle.md)
