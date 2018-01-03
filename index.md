@@ -26,7 +26,7 @@
 [顶点着色器](VertexShader.md)  
 [颜色渐变](ColorFade.md)  
 [顶点动画](VertexAnimation.md)  
-[表面着色器](SurfaceShader.md)  
+[surface shader(表面着色器)](shader_surface_1.md)  
 [模板测试](StencilTest.md)  
 
 
