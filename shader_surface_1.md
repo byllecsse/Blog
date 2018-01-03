@@ -16,6 +16,7 @@
 
 
 先来看个简单的着色器：
+使用lambert光照模型，只对物体进行白色光照的输出。
 ```
 Shader "Example/Diffuse Simple" {
 	SubShader {
@@ -129,6 +130,13 @@ HalfLambert的原理是把漫反射光照值的范围分成两半，然后加上
 
 ![HalfLambert光照曲线示意图](https://picabstract-preview-ftn.weiyun.com:8443/ftn_pic_abs_v2/46e43bbdad3b259e0e64bd703c63929b1d9ffb3faa963797a104ee760c3ed2db7153e89febb41d71f60d9248365cb3aa?pictype=scale&from=30113&version=2.0.0.2&uin=287874300&fname=half_lambert.png&size=1024)
 
+
+input输入_MainTex纹理的uv，tex2D则对这个纹理采样，读取出rgb值输出到材质。这是基础的漫反射带贴图shader.
+```
+void surf (Input IN, inout SurfaceOutput o) {
+	o.Albedo = tex2D (_MainTex, IN.uv_MainTex).rgb;
+}
+```
 
 
 #### fallback
