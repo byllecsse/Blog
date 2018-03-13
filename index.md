@@ -15,6 +15,7 @@
 [（转）对Unity中Coroutines的理解](http://wuzhiwei.net/unity_coroutines/)  
 [（转）Unity3D手游开发实践-腾讯桌球：客户端总结](http://www.jianshu.com/p/10693fee70a5)  
 [防止相机画面穿透](ProtectCameraFromWallClip.md)
+[Unity修改Text字间距](TextSpace.md)
 
 
 ### Lua
