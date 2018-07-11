@@ -1,4 +1,4 @@
-[Back](index.md)
+[Back](../index.md)
 # 变长参数的使用和误区
 
 lua可以支持不同数量的实参，参数不限类型，可以是int, float, table，print()就是lua支持变长参数的函数，比如说

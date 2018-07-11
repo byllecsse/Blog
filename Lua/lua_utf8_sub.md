@@ -1,4 +1,4 @@
-[Back](index.md)
+[Back](../index.md)
 
 # Lua中文字符串截取
 
