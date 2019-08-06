@@ -30,7 +30,7 @@ end
 ```
 
 ## 创建ListView
-
+外部panel继承window，创建ListView对象进行控件绑定，控件是在Panel gameObject子节点下。
 ``` lua
 -- 创建listview组件
 function Window:CreateListView(name, prefabName, typeName)
@@ -48,7 +48,7 @@ end
 ```
 
 ## UpdateItemPos()
-
+更新创建的item gameObject位置，用的是循环更新x/y，而不是每次根据index计算x/y。
 ``` lua
 function ListView:UpdateItemPos()
     -- 遍历itemList
@@ -64,7 +64,7 @@ end
 ```
 
 ## ScrollTo(index)
-
+滑动到某个位置，说滑动其实不准确，应该是直接设置scrollView到某个位置显示，计算index在全部Item中的位置半分比，用scroll提供的self.scroll.horizontalNormalizedPosition/self.scroll.verticalNormalizedPosition滑动到指定区域。
 ``` lua 
 function ListView:ScrollTo(index)
     -- index越界判断
